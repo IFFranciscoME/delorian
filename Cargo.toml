@@ -1,0 +1,70 @@
+[workspace]
+
+resolver = "2"
+members = [
+  # Core
+  "delorian",
+
+  # Operational
+  "delorian-analytics",
+  "delorian-data",
+  "delorian-results",
+  
+  # Usability
+  "tests",
+  "examples",
+  "benches",
+]
+
+[workspace.package]
+
+edition = "2021"
+rust-version = "1.84.0"
+
+description = ""
+authors = ["francisco <if.francisco.me@gmail.com>"]
+documentation = "https://docs.rs/delorian/"
+repository = "https://github.com/iffranciscome/delorian"
+
+keywords = ["machine-learning", "framework", "math", "crypto", "trading"]
+categories = ["data-structures", "development-tools", "finance", "simulation"]
+exclude = ["data/*", ".github", "Makefile.toml", "CONTRIBUTING.md", "*.log", "tags"]
+include = ["katex-header.html"]
+
+license = "MIT"
+
+[workspace.dependencies]
+
+# Solana 
+lassie = "0.9.0"
+reqwest = { version = "0.11", features = ["json"] }
+rs-car-ipfs = { version = "0.3.0" }
+solana-transaction-status = { version = "1.14" }
+
+# Processing
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0" }
+regex = { version = "1.5" }
+
+# Delorian complements
+delorian = { path = "./delorian", version = "0.0.1" }
+delorian-analytics = { path = "./delorian-analytics", version = "0.0.1" }
+delorian-data = { path = "./delorian-data", version = "0.0.1" }
+delorian-results = { path = "./delorian-results", version = "0.0.1" }
+
+# Error Handling
+thiserror = { version = "1.0.64" }
+anyhow = { version = "1.0" }
+
+# Benchmarks
+criterion = { version = "0.3", features = ["html_reports"] }
+rand = { version = "0.9.0" }
+memuse = { version = "0.2.0" }
+human_bytes = { version = "0.4.1" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unused_extern_crates = "warn"
+
+

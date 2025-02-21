@@ -1,0 +1,27 @@
+[package]
+name = "delorian"
+description = "Data artifacts with Delta-in-time"
+version = "0.0.1"
+publish = true
+
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+documentation.workspace = true
+repository.workspace = true
+
+[dependencies]
+
+# Delorian project
+delorian-analytics = { workspace = true }
+delorian-data = { workspace = true }
+delorian-results = { workspace = true }
+
+# Error Handling
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+
+# Compute
+tokio = { workspace = true }
