@@ -5,8 +5,6 @@
 /// Connection clients
 pub mod clients;
 
-/// Data processing methods
-pub mod processing;
 
 /// Data structures
 pub mod data;

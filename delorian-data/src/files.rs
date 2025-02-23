@@ -1,10 +1,13 @@
 //! Files I/O
 
+use delorian_results::errors::FileError;
 use serde_json::Value;
 use std::fs::File;
 use std::io::Read;
 use thiserror::Error;
-use delorian_results::errors::FileError;
+
+// -------------------------------------------------------------------------------------------- //
+// -------------------------------------------------------------------------------------------- //
 
 pub fn read_cases_json(json_file: &str) -> Result<Vec<String>, FileError> {
     // Json file

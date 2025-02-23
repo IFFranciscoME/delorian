@@ -8,7 +8,7 @@ use serde_json::json;
 // ----------------------------------------------------------------------------- Transaction -- //
 // ----------------------------------------------------------------------------- ----------- -- //
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionResponse {
     pub jsonrpc: String,
@@ -16,7 +16,7 @@ pub struct TransactionResponse {
     pub id: i64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionResult {
     pub blockTime: Option<i64>,
@@ -26,12 +26,12 @@ pub struct TransactionResult {
     pub version: Option<u8>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct TransactionStatus {
     pub ok: Option<serde_json::Value>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionMeta {
     pub err: Option<serde_json::Value>,
@@ -48,7 +48,7 @@ pub struct TransactionMeta {
     pub loaded_addresses: Option<LoadedAddresses>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub message: Option<Message>,
@@ -58,17 +58,17 @@ pub struct Transaction {
 // --------------------------------------------------------------------------------- Message -- //
 // --------------------------------------------------------------------------------- ------- -- //
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Message {
-    pub account_key: Option<Vec<String>>,
+    pub account_keys: Option<Vec<String>>,
     pub header: MessageHeader,
     pub instructions: Option<Vec<Instruction>>,
     pub recent_blockhash: Option<String>,
     pub address_table_lookups: Vec<AddressTableLookup>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MessageHeader {
     pub num_required_signatures: Option<u8>,
@@ -79,7 +79,7 @@ pub struct MessageHeader {
 // ----------------------------------------------------------------------------- Instruction -- //
 // ----------------------------------------------------------------------------- ----------- -- //
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Instruction {
     pub program_id_index: Option<u64>,
@@ -88,7 +88,7 @@ pub struct Instruction {
     pub stack_height: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InnerInstruction {
     pub index: u8,
     pub instructions: Vec<Instruction>,
@@ -97,7 +97,7 @@ pub struct InnerInstruction {
 // ------------------------------------------------------------------------------- Addresses -- //
 // ------------------------------------------------------------------------------- --------- -- //
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AddressTableLookup {
     pub account_key: Option<String>,
@@ -105,13 +105,13 @@ pub struct AddressTableLookup {
     pub readonly_indexes: Option<Vec<u8>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LoadedAddresses {
     pub writable: Vec<String>,
     pub readonly: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TokenBalance {
     pub account_index: u8,
@@ -121,7 +121,7 @@ pub struct TokenBalance {
     pub ui_token_amount: UiTokenAmount,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UiTokenAmount {
     pub amount: String,
@@ -130,7 +130,36 @@ pub struct UiTokenAmount {
     pub ui_amount_string: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Reward {
     // Add fields if rewards are used
+}
+
+// --------------------------------------------------------------------------- Priority Fees -- //
+// --------------------------------------------------------------------------- ------------- -- //
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct priorityFeeEstimateResponse {
+    pub jsonrpc: String,
+    pub result: Option<priorityFeeEstimateResult>,
+    pub id: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct priorityFeeEstimateResult {
+    pub priority_fee_estimate: Option<f64>,
+    pub priority_fee_levels: Option<priorityFeeLevels>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct priorityFeeLevels {
+    pub min: Option<f64>,
+    pub low: Option<f64>,
+    pub medium: Option<f64>,
+    pub high: Option<f64>,
+    pub very_high: Option<f64>,
+    pub unsafe_max: Option<f64>,
 }
