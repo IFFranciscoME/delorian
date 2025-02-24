@@ -1,0 +1,32 @@
+[package]
+name = "benches"
+description = "Benchmarks for the Delorian project"
+version = "0.0.1"
+publish = false
+
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+documentation.workspace = true
+repository.workspace = true
+
+[dependencies]
+
+# Atelier sub-modules 
+delorian = { workspace = true }
+delorian-analytics = { workspace = true }
+delorian-data = { workspace = true }
+delorian-results = { workspace = true }
+
+criterion = { workspace = true }
+rand = { workspace = true }
+memuse = { workspace = true }
+human_bytes = { workspace = true }
+
+[[bench]]
+name = "sources_benchmark"
+path = "sources_benchmark.rs"
+harness = false
+

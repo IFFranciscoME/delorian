@@ -1,0 +1,25 @@
+[package]
+name = "delorian-analytics"
+description = "metrics and models for the Delorian project"
+version = "0.0.1"
+publish = false
+
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+documentation.workspace = true
+repository.workspace = true
+
+[dependencies]
+
+# Delorian
+delorian-data = { workspace = true }
+delorian-results = { workspace = true }
+
+regex = { workspace = true }
+
+# Error Handling
+thiserror = { workspace = true }
+

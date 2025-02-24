@@ -1,0 +1,32 @@
+[package]
+name = "delorian-data"
+description = "Data structures and I/O tools for the Delorian project"
+version = "0.0.1"
+publish = false
+
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+documentation.workspace = true
+repository.workspace = true
+
+[dependencies]
+
+delorian-results = { workspace = true }
+
+# Compute
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Solana
+reqwest = { workspace = true }
+rs-car-ipfs = { workspace = true }
+solana-transaction-status = { workspace = true }
+
+# Error
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+

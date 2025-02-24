@@ -1,0 +1,28 @@
+[package]
+name = "examples"
+description = "end-to-end examples for the Delorian project"
+version = "0.0.1"
+publish = false
+
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+documentation.workspace = true
+repository.workspace = true
+
+[dev-dependencies]
+
+# Atelier sub-modules 
+delorian = { path = "../delorian", version = "0.0.1" }
+delorian-analytics = { path = "../delorian-analytics", version = "0.0.1" }
+delorian-data = { path = "../delorian-data", version = "0.0.1" }
+delorian-results = { path = "../delorian-results", version = "0.0.1" }
+
+[[example]]
+name = "solana_transactions"
+path = "solana_transactions.rs"
+
+[lints]
+workspace = true
