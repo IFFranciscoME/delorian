@@ -73,48 +73,50 @@ impl HeliusRpc {
 
         Ok(tx_response)
     }
-}
 
-// -------------------------------------------------------------------------------------------- //
-// -------------------------------------------------------------------------------------------- //
+    pub async fn get_priority_fee_estimate(
+        &self,
+        account_keys: &str) -> Result<priorityFeeEstimateResponse> {
 
-// -------------------------------------------------------------------------------------------- //
-// -------------------------------------------------------------------------------------------- //
+        let helius_endpoint = "getPriorityFeeEstimate".to_string();
+        let helius_client = Client::new();
+        let url = format!("{}{}", self.url, self.tkn);
 
-pub async fn get_priority_fee_estimate(tx_hash: &str) -> Result<priorityFeeEstimateResponse> {
-    let client = Client::new();
-    let tk1 = "0f34064d-5762-4b3f-af49-319920aa09b9";
-    let url = "https://mainnet.helius-rpc.com/?api-key=".to_owned() + tk1;
+        let pfe_request = json!({
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": &helius_endpoint,
+            "params": [
+                {
+                    "accountKeys": [account_keys],
+                    "options": { "includeAllPriorityFeeLevels": true },
+                },
+            ],
+        });
 
-    let request = json!({
-        "jsonrpc": "2.0",
-        "id": "1",
-        "method": "getPriorityFeeEstimate",
-        "params": [
-            {
-                "accountKeys": ["So11111111111111111111111111111111111111112"],
-                "options": { "includeAllPriorityFeeLevels": true }
-            },
-        ],
-    });
+        let context_msg = "Failed request to: ".to_string() + &helius_endpoint.to_string();
 
-    let response = client
+        let response = helius_client
         .post(url)
         .header("Content-Type", "application/json")
-        .json(&request)
+        .json(&pfe_request)
         .send()
         .await
-        .context("Failed to send RPC request")?;
-
-    // println!("response: {:?}", response);
-
-    let priority_fee_response: priorityFeeEstimateResponse = response
+        .context(context_msg)?;
+       
+        let priority_fee_response: priorityFeeEstimateResponse = response
         .json()
         .await
         .context("Failed to parse JSON response")?;
 
     Ok(priority_fee_response)
+
+    }
+
 }
+
+// -------------------------------------------------------------------------------------------- //
+// -------------------------------------------------------------------------------------------- //
 
 pub fn get_accouts() {
     println!("placeholder")

@@ -143,7 +143,7 @@ pub struct Reward {
 pub struct priorityFeeEstimateResponse {
     pub jsonrpc: String,
     pub result: Option<priorityFeeEstimateResult>,
-    pub id: String,
+    pub id: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

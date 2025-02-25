@@ -1,1 +1,4 @@
-// placeholder
+
+fn main() {
+    println!("Placeholder");
+}
