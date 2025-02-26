@@ -76,8 +76,8 @@ impl HeliusRpc {
 
     pub async fn get_priority_fee_estimate(
         &self,
-        account_keys: &str) -> Result<priorityFeeEstimateResponse> {
-
+        account_keys: &str,
+    ) -> Result<priorityFeeEstimateResponse> {
         let helius_endpoint = "getPriorityFeeEstimate".to_string();
         let helius_client = Client::new();
         let url = format!("{}{}", self.url, self.tkn);
@@ -97,22 +97,20 @@ impl HeliusRpc {
         let context_msg = "Failed request to: ".to_string() + &helius_endpoint.to_string();
 
         let response = helius_client
-        .post(url)
-        .header("Content-Type", "application/json")
-        .json(&pfe_request)
-        .send()
-        .await
-        .context(context_msg)?;
-       
+            .post(url)
+            .header("Content-Type", "application/json")
+            .json(&pfe_request)
+            .send()
+            .await
+            .context(context_msg)?;
+
         let priority_fee_response: priorityFeeEstimateResponse = response
-        .json()
-        .await
-        .context("Failed to parse JSON response")?;
+            .json()
+            .await
+            .context("Failed to parse JSON response")?;
 
-    Ok(priority_fee_response)
-
+        Ok(priority_fee_response)
     }
-
 }
 
 // -------------------------------------------------------------------------------------------- //

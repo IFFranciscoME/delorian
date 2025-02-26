@@ -9,82 +9,56 @@ use thiserror::Error;
 // -------------------------------------------------------------------------------------------- //
 // -------------------------------------------------------------------------------------------- //
 
-pub fn read_json(json_file: &str, cases: &str, sub_case: &str) -> Result<Vec<String>, FileError> {
-    // Json file
-    let mut file = File::open(json_file)?;
+pub fn read_json(json_file: &str, case: &str, sub_case: &str) -> Result<Vec<String>, FileError> {
+    // Read and parse JSON in one operation
+    let json_value: Value = {
+        let file = File::open(json_file)?;
+        serde_json::from_reader(file).unwrap()
+    };
 
-    // Read the file's content into a single string
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
+    // Clean strings consistently
+    let clean_string = |s: &str| s.trim_matches('"').replace('\\', "");
 
-    // Parse the Json string into a value
-    let json_value: Value = serde_json::from_str(&contents)?;
+    // Generic value extraction with path validation
+    let get_values = |path: &[&str], value_type: &str| -> Result<Vec<String>, FileError> {
+        let mut current = &json_value;
 
-    let mut v_entries = vec![];
-    
-    match cases {
-        "tx_arbs_jito" => {
-            // Get corresponding fields
-            if let Some(tx_arbs_jito) = json_value["tx_arbs_jito"].as_object() {
-                if let Some(tx_signature) = tx_arbs_jito["tx_signature"].as_array() {
-                    for i_signature in tx_signature {
-                        if let Some(signature) = i_signature.as_str() {
-                            let cleaned_signature = signature.trim_matches('"').replace("\\", "");
-                            v_entries.push(cleaned_signature);
-                        }
-                    }
-                    Ok(v_entries)
-                } else {
-                    println!("tx_signature not present");
-                    Ok(v_entries)
-                }
-            } else {
-                println!("tx_arbs_jito not present");
-                Ok(v_entries)
-            }
-        },
-        "tx_arbs_suspected" => {
-            if let Some(tx_arbs_suspected) = json_value["tx_arbs_suspected"].as_object() {
-                if let Some(tx_signature) = tx_arbs_suspected["tx_signature"].as_array() {
-                    for i_signature in tx_signature {
-                        if let Some(signature) = i_signature.as_str() {
-                            let cleaned_signature = signature.trim_matches('"').replace("\\", "");
-                            v_entries.push(cleaned_signature);
-                        }
-                    }
-                    Ok(v_entries)
-                } else {
-                    println!("tx_signature not present");
-                    Ok(v_entries)
-                }
-            } else {
-                println!("tx_arbs_suspected not present");
-                Ok(v_entries)
-            }
-        },
-
-        "addresses_dex" => {
-            if let Some(addresses_dex) = json_value["addresses_dex"].as_object() {
-                if let Some(sub_cases) = addresses_dex[sub_case].as_object() {
-                    let sub_cases_values: Vec<String> = sub_cases
-                        .values()
-                        .map(|v| v.as_str().unwrap_or("").to_string())
-                        .collect();
-                    v_entries.extend(sub_cases_values);
-                    Ok(v_entries)
-                } else {
-                    println!("{:?} is not present", sub_case);
-                    Ok(v_entries)
-                }
-            } else {
-                println!("addresses_dex not present");
-                Ok(v_entries)
-            }
+        for key in path {
+            current = current
+                .get(key)
+                .ok_or_else(|| FileError::MissingKey(format!("Missing key: {}", key)))?;
         }
+
+        match value_type {
+            "array" => current
+                .as_array()
+                .ok_or_else(|| FileError::TypeMismatch("Expected array".into()))
+                .map(|arr| {
+                    arr.iter()
+                        .filter_map(|v| v.as_str().map(clean_string))
+                        .collect()
+                }),
+            "object" => current
+                .as_object()
+                .ok_or_else(|| FileError::TypeMismatch("Expected object".into()))
+                .map(|obj| {
+                    obj.values()
+                        .filter_map(|v| v.as_str().map(clean_string))
+                        .collect()
+                }),
+            _ => Err(FileError::InvalidInput("Invalid value type".into())),
+        }
+    };
+
+    match case {
+        "tx_arbs_jito" => get_values(&["tx_arbs_jito", "tx_signature"], "array"),
+        "tx_arbs_suspected" => get_values(&["tx_arbs_suspected", sub_case], "array"),
+        "addresses_dex" => get_values(&["addresses_dex", sub_case], "object"),
+        "tx_generic" => get_values(&["tx_generic", sub_case], "array"),
+        "addresses_jito" => get_values(&["addresses_jito", sub_case], "object"),
         _ => {
-            println!("Unknown case: {}", cases);
-            Ok(v_entries)
+            eprintln!("Unknown case: {}", case);
+            Ok(Vec::new())
         }
     }
 }
-

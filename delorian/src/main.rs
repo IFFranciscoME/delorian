@@ -1,13 +1,16 @@
 //! Main
 
 use anyhow::Result;
-use delorian_analytics::{analyze_tx, analyze_pfe, TxAnalyticsTable, PfeAnalyticsTable};
+use delorian_analytics::metrics;
 use delorian_data::{clients, files};
 use std::env;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-
+    
+    // ---------------------------------------------------------------------- Initialization -- //
+    // ---------------------------------------------------------------------- -------------- -- //
+    
     let url_env = "https://mainnet.helius-rpc.com/?api-key=";
     let tkn_env = match env::var("HELIUS_TOKEN") {
         Ok(h_tk) => h_tk.to_string(),
@@ -20,40 +23,48 @@ async fn main() -> Result<()> {
         .build()
         .expect("Failed to build HeliusRpc");
 
-    // -- Priority Fee Estimates -- //
-    let v_accounts = files::read_json(
-        "./assets/datasets/exp_1_cases.json",
-        "addresses_dex",
-        "raydium"
-    );
-
-    let i_account = &v_accounts?[0];
-    let pfe_response = h_client.get_priority_fee_estimate(i_account).await?;
-    let pfe_table: PfeAnalyticsTable = analyze_pfe(
-        pfe_response.result.unwrap().clone(),
-    );
-
-    println!("\naccount: {:?}, \npfe_table: {:?}", i_account, pfe_table);
+    // ---------------------------------------------------------------------------- Accounts -- //
+    // ---------------------------------------------------------------------------- -------- -- //
     
-    // -- Transactions -- // 
-    let v_signatures = files::read_json(
+    let v_jito_tx = files::read_json(
         "./assets/datasets/exp_1_cases.json",
         "tx_arbs_jito",
-        ""
+        "tx_signature",
+    );
+
+    let v_jito_addresses = files::read_json(
+        "./assets/datasets/exp_1_cases.json",
+        "addresses_jito",
+        "wallets",
     );
     
-    for i_signature in v_signatures.unwrap() {
+    for i_signature in v_jito_tx.unwrap() {
 
+        println!("\n-- tx_signature: {:?} --- \n", &i_signature);
+
+        // -------------------------------------------------------------- Transaction's Data -- //
+        // -------------------------------------------------------------- ------------------ -- //
+       
+        // Each Arb positive transaction from the Jito Arb explorer
         let tx_response = h_client.get_tx(&i_signature).await?;
-        let analytics_table: TxAnalyticsTable = analyze_tx(
-            tx_response.clone(),
-        );
+        let tx_jito_metrics = metrics::jito_metrics(tx_response.clone());
+        let tx_co_metrics = metrics::co_metrics(tx_response.clone());
 
-        println!("\n -- tx_signature: {:?} -- \n", i_signature);
-        println!("Analytics Table: {:?}", analytics_table);
-     
+        // ---------------------------------------------------------- Priority Fee Estimates -- //
+        // ---------------------------------------------------------- ---------------------- -- //
+
+        // the jito_tip_7 address as an example
+        let generic_address = v_jito_addresses.as_ref().unwrap()[6].as_ref();
+        let pfe_response = h_client.get_priority_fee_estimate(&generic_address).await?;
+        let pfe_acc_metrics = metrics::pfe_metrics(pfe_response);
+
+        println!("---- tx_jito_metrics: {:?}\n", tx_jito_metrics);
+        println!("---- tx_co_metrics: {:?}\n", tx_co_metrics);
+        println!("---- pfe_acc_metrics: {:?}\n", pfe_acc_metrics);
     }
-    
+
     Ok(())
+    
 
 }
+

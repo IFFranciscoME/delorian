@@ -65,6 +65,17 @@
       "4XBqViD1XYF1qHrErrsXBzDrCapvP9fEFX4LPjXZi9YU"
     ]
   },
+  "tx_generic": {
+    "tx_signature": [
+      "auJQiPvuL65idvihB2PPeyL5jf5bQFhKeiTH2KWy6miwHojWj3xxvs5BcanPXyWUVBPPe59uPHEJhdFUvJ2oa4Q"
+    ],
+    "block": [
+      323037923
+    ],
+    "signer": [
+      "9mKN5zoWJLDNNqGRnRKDmgJ8gDNFuZv3JKcTsnEN3uJJ"
+    ]
+  },
   "addresses_dex": {
     "raydium": {
       "WSOL_VINE": "58fzJMbX5PatnfJPqWWsqkVFPRKptkbb5r2vCw4Qq3z9",

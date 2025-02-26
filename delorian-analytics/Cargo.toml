@@ -18,8 +18,8 @@ repository.workspace = true
 delorian-data = { workspace = true }
 delorian-results = { workspace = true }
 
+# Processing
 regex = { workspace = true }
-
 # Error Handling
 thiserror = { workspace = true }
 

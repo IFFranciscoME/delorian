@@ -15,6 +15,19 @@ pub enum DataError {
 pub enum FileError {
     #[error("Failed to open file: {0}")]
     IoError(#[from] std::io::Error),
+
+    #[error("Failed to open file: {0}")]
+    Json(serde_json::Error),
+
     #[error("Failed to parse JSON: {0}")]
-    JsonError(#[from] serde_json::Error),
+    JsonError(String),
+
+    #[error("Failed to parse JSON: {0}")]
+    TypeMismatch(String),
+
+    #[error("Failed to parse JSON: {0}")]
+    InvalidInput(String),
+
+    #[error("Failed to parse JSON: {0}")]
+    MissingKey(String),
 }

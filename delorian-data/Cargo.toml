@@ -23,10 +23,8 @@ serde_json = { workspace = true }
 
 # Solana
 reqwest = { workspace = true }
-rs-car-ipfs = { workspace = true }
 solana-transaction-status = { workspace = true }
 
 # Error
 thiserror = { workspace = true }
 anyhow = { workspace = true }
-

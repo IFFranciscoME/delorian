@@ -36,9 +36,7 @@ license = "MIT"
 [workspace.dependencies]
 
 # Solana 
-lassie = "0.9.0"
 reqwest = { version = "0.11", features = ["json"] }
-rs-car-ipfs = { version = "0.3.0" }
 solana-transaction-status = { version = "1.14" }
 
 # Processing
@@ -66,5 +64,4 @@ human_bytes = { version = "0.4.1" }
 [workspace.lints.rust]
 unsafe_code = "forbid"
 unused_extern_crates = "warn"
-
 
