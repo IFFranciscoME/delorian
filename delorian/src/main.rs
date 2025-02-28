@@ -12,6 +12,8 @@ async fn main() -> Result<()> {
     // ---------------------------------------------------------------------- -------------- -- //
     
     let url_env = "https://mainnet.helius-rpc.com/?api-key=";
+    let url_sol = "https://api.devnet.solana.com";
+
     let tkn_env = match env::var("HELIUS_TOKEN") {
         Ok(h_tk) => h_tk.to_string(),
         Err(_e) => "".to_string(),
@@ -22,6 +24,11 @@ async fn main() -> Result<()> {
         .tkn(tkn_env.to_string())
         .build()
         .expect("Failed to build HeliusRpc");
+
+    let s_client = clients::SolanaRpcBuilder::new()
+        .url(url_sol.to_string())
+        .build()
+        .expect("Failed to build SolanaRpc");
 
     // ---------------------------------------------------------------------------- Accounts -- //
     // ---------------------------------------------------------------------------- -------- -- //
@@ -37,7 +44,19 @@ async fn main() -> Result<()> {
         "addresses_jito",
         "wallets",
     );
+        
+    // --------------------------------------------------------- Recent Prioritization Fees -- //
+    // --------------------------------------------------------- -------------------------- -- //
     
+    let generic_address = v_jito_addresses.as_ref().unwrap()[6].clone();
+    let v_accounts = vec![generic_address];
+    let solana_response = s_client.get_rpf(v_accounts).await?;
+
+    println!("---- rpf_metrics: {:?}", solana_response.result.unwrap());
+    
+    // ----------------------------------------------------------------- Transaction's Data -- //
+    // ----------------------------------------------------------------- ------------------ -- //
+   
     for i_signature in v_jito_tx.unwrap() {
 
         println!("\n-- tx_signature: {:?} --- \n", &i_signature);
@@ -58,9 +77,10 @@ async fn main() -> Result<()> {
         let pfe_response = h_client.get_priority_fee_estimate(&generic_address).await?;
         let pfe_acc_metrics = metrics::pfe_metrics(pfe_response);
 
-        println!("---- tx_jito_metrics: {:?}\n", tx_jito_metrics);
-        println!("---- tx_co_metrics: {:?}\n", tx_co_metrics);
-        println!("---- pfe_acc_metrics: {:?}\n", pfe_acc_metrics);
+        println!("---- tx_jito_metrics: {:?}", tx_jito_metrics);
+        println!("---- tx_co_metrics: {:?}", tx_co_metrics);
+        println!("---- pfe_acc_metrics: {:?}", pfe_acc_metrics);
+     
     }
 
     Ok(())

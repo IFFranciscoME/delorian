@@ -10,3 +10,7 @@ pub mod data;
 
 /// File I/O functionality
 pub mod files;
+
+/// Transaction Types
+pub mod types;
+

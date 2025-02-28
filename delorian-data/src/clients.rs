@@ -1,8 +1,82 @@
-use crate::data::{priorityFeeEstimateResponse, TransactionResponse};
+use crate::data::{priorityFeeEstimateResponse, TransactionResponse, SolanaResponse};
 use anyhow::{Context, Result};
 use reqwest::Client;
 use serde::Deserialize;
 use serde_json::json;
+
+// -------------------------------------------------------------------------------------------- //
+// -------------------------------------------------------------------------------------------- //
+
+// https://api.devnet.solana.com
+
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct SolanaRpc {
+    pub url: String,
+}
+
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct SolanaRpcBuilder {
+    url: Option<String>,
+}
+
+impl SolanaRpcBuilder {
+    
+    pub fn new() -> Self {
+        SolanaRpcBuilder {
+            url: None,
+        }
+    }
+
+    pub fn url(mut self, url: String) -> Self {
+        self.url = Some(url);
+        self
+    }
+
+    pub fn build(self) -> Result<SolanaRpc, String> {
+        match (self.url) {
+            (Some(url)) => Ok(SolanaRpc { url }),
+            _ => Err("Both URL and token must be provided".to_string()),
+        }
+    }
+
+}
+
+impl SolanaRpc {
+
+    pub async fn get_rpf(&self, v_accounts: Vec<String>) -> Result<SolanaResponse> {
+
+        let solana_client = Client::new();
+        let url = format!("{}", self.url);
+
+        let solana_request = json!({
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "getRecentPrioritizationFees",
+            "params": [v_accounts],
+        });
+    
+    let solana_response = solana_client
+            .post(url)
+            .header("Content-Type", "application/json")
+            .json(&solana_request)
+            .send()
+            .await
+            .context("Failed to send RPC request to Solana")?;
+
+        println!("solana response: {:?}", solana_response);
+    
+        let solana_rpf_response: SolanaResponse = solana_response
+            .json()
+            .await
+            .context("Failed to parse Solana response JSON data")?;
+
+        Ok(solana_rpf_response)
+
+    }
+}
+
+// -------------------------------------------------------------------------------------------- //
+// -------------------------------------------------------------------------------------------- //
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct HeliusRpc {
@@ -42,7 +116,8 @@ impl HeliusRpcBuilder {
 }
 
 impl HeliusRpc {
-    pub async fn get_tx(&self, tx_signature: &str) -> Result<TransactionResponse> {
+
+       pub async fn get_tx(&self, tx_signature: &str) -> Result<TransactionResponse> {
         let helius_client = Client::new();
         let url = format!("{}{}", self.url, self.tkn);
 
