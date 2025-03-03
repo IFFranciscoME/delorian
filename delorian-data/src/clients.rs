@@ -1,4 +1,8 @@
-use crate::data::{priorityFeeEstimateResponse, TransactionResponse, SolanaResponse};
+use crate::data::{
+    SolanaResponse,
+    priorityFeeEstimateResponse,
+    priorityFeeRecentResponse,
+    TransactionResponse};
 use anyhow::{Context, Result};
 use reqwest::Client;
 use serde::Deserialize;
@@ -20,11 +24,8 @@ pub struct SolanaRpcBuilder {
 }
 
 impl SolanaRpcBuilder {
-    
     pub fn new() -> Self {
-        SolanaRpcBuilder {
-            url: None,
-        }
+        SolanaRpcBuilder { url: None }
     }
 
     pub fn url(mut self, url: String) -> Self {
@@ -38,13 +39,13 @@ impl SolanaRpcBuilder {
             _ => Err("Both URL and token must be provided".to_string()),
         }
     }
-
 }
 
 impl SolanaRpc {
-
-    pub async fn get_rpf(&self, v_accounts: Vec<String>) -> Result<SolanaResponse> {
-
+    pub async fn get_priority_fee_recent(
+        &self,
+        v_accounts: Vec<String>
+    ) -> Result<priorityFeeRecentResponse> {
         let solana_client = Client::new();
         let url = format!("{}", self.url);
 
@@ -54,8 +55,8 @@ impl SolanaRpc {
             "method": "getRecentPrioritizationFees",
             "params": [v_accounts],
         });
-    
-    let solana_response = solana_client
+
+        let solana_response = solana_client
             .post(url)
             .header("Content-Type", "application/json")
             .json(&solana_request)
@@ -63,14 +64,22 @@ impl SolanaRpc {
             .await
             .context("Failed to send RPC request to Solana")?;
 
-        println!("solana response: {:?}", solana_response);
-    
         let solana_rpf_response: SolanaResponse = solana_response
             .json()
             .await
             .context("Failed to parse Solana response JSON data")?;
+        
+        let fees = solana_rpf_response
+            .result
+            .as_ref()
+            .map(|results| results.iter().filter_map(|r| r.prioritization_fee).collect());
 
-        Ok(solana_rpf_response)
+        let slots = solana_rpf_response
+            .result
+            .as_ref()
+            .map(|results| results.iter().filter_map(|r| r.slot).collect());
+
+        Ok(priorityFeeRecentResponse { slots, fees })
 
     }
 }
@@ -116,8 +125,7 @@ impl HeliusRpcBuilder {
 }
 
 impl HeliusRpc {
-
-       pub async fn get_tx(&self, tx_signature: &str) -> Result<TransactionResponse> {
+    pub async fn get_tx(&self, tx_signature: &str) -> Result<TransactionResponse> {
         let helius_client = Client::new();
         let url = format!("{}{}", self.url, self.tkn);
 
@@ -186,11 +194,4 @@ impl HeliusRpc {
 
         Ok(priority_fee_response)
     }
-}
-
-// -------------------------------------------------------------------------------------------- //
-// -------------------------------------------------------------------------------------------- //
-
-pub fn get_accouts() {
-    println!("placeholder")
 }

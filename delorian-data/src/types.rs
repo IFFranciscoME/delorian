@@ -136,4 +136,3 @@ pub enum TransactionType {
     ADD_LIQUIDITY,
     WITHDRAW_LIQUIDITY,
 }
-

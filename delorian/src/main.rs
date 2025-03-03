@@ -7,10 +7,10 @@ use std::env;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    
+
     // ---------------------------------------------------------------------- Initialization -- //
     // ---------------------------------------------------------------------- -------------- -- //
-    
+
     let url_env = "https://mainnet.helius-rpc.com/?api-key=";
     let url_sol = "https://api.devnet.solana.com";
 
@@ -32,7 +32,7 @@ async fn main() -> Result<()> {
 
     // ---------------------------------------------------------------------------- Accounts -- //
     // ---------------------------------------------------------------------------- -------- -- //
-    
+
     let v_jito_tx = files::read_json(
         "./assets/datasets/exp_1_cases.json",
         "tx_arbs_jito",
@@ -44,26 +44,17 @@ async fn main() -> Result<()> {
         "addresses_jito",
         "wallets",
     );
-        
-    // --------------------------------------------------------- Recent Prioritization Fees -- //
-    // --------------------------------------------------------- -------------------------- -- //
-    
-    let generic_address = v_jito_addresses.as_ref().unwrap()[6].clone();
-    let v_accounts = vec![generic_address];
-    let solana_response = s_client.get_rpf(v_accounts).await?;
 
-    println!("---- rpf_metrics: {:?}", solana_response.result.unwrap());
-    
-    // ----------------------------------------------------------------- Transaction's Data -- //
-    // ----------------------------------------------------------------- ------------------ -- //
-   
+    // ------------------------------------------------------------ Transaction's Processing -- //
+    // ------------------------------------------------------------ ------------------------ -- //
+
     for i_signature in v_jito_tx.unwrap() {
 
-        println!("\n-- tx_signature: {:?} --- \n", &i_signature);
+        println!("\n-- tx_signature: {:?}\n", &i_signature);
 
         // -------------------------------------------------------------- Transaction's Data -- //
         // -------------------------------------------------------------- ------------------ -- //
-       
+
         // Each Arb positive transaction from the Jito Arb explorer
         let tx_response = h_client.get_tx(&i_signature).await?;
         let tx_jito_metrics = metrics::jito_metrics(tx_response.clone());
@@ -80,11 +71,16 @@ async fn main() -> Result<()> {
         println!("---- tx_jito_metrics: {:?}", tx_jito_metrics);
         println!("---- tx_co_metrics: {:?}", tx_co_metrics);
         println!("---- pfe_acc_metrics: {:?}", pfe_acc_metrics);
-     
+
+        // ----------------------------------------------------------- Priority Fee Historic -- //
+        // ----------------------------------------------------------- --------------------- -- //
+
+        let v_accounts = vec![generic_address.to_string()];
+        let pfr_response = s_client.get_priority_fee_recent(v_accounts).await?;
+        let pfr_acc_metrics = metrics::pfr_metrics(pfr_response.clone());
+        
+        println!("---- pfr_acc_metrics: {:?}", pfr_acc_metrics);
     }
 
     Ok(())
-    
-
 }
-

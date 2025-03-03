@@ -3,7 +3,7 @@
 //! Structures and tools for exploratory analytics
 //!
 
-use delorian_data::data::{priorityFeeEstimateResult, TransactionResponse};
+use delorian_data::data::TransactionResponse;
 
 /// Data processing methods
 pub mod processing;
@@ -11,25 +11,11 @@ pub mod processing;
 /// Metrics from Blockchain Data
 pub mod metrics;
 
-#[derive(Debug, Clone)]
-pub struct PfeAnalyticsTable {
-    pub min: f64,
-    pub low: f64,
-    pub medium: f64,
-    pub high: f64,
-    pub very_high: f64,
-    pub unsafe_max: f64,
-}
+/// Response Tables 
+pub mod tables;
 
-#[derive(Debug, Clone)]
-pub struct TxAnalyticsTable {
-    pub compute_units: u64,
-    pub fee: u64,
-    pub compute_budget_call: bool,
-    pub net_profit: f64,
-}
 
-pub fn analyze_tx(tx_response: TransactionResponse) -> TxAnalyticsTable {
+pub fn analyze_tx(tx_response: TransactionResponse) -> tables::TxAnalyticsTable {
     let compute_units = tx_response
         .result
         .as_ref()
@@ -80,13 +66,15 @@ pub fn analyze_tx(tx_response: TransactionResponse) -> TxAnalyticsTable {
     let grep_jito_tips = processing::grep_messages(&account_keys, &jito_tip_accounts);
     let jito_tip = if grep_jito_tips.len() != 0 {
         true
-    } else { false };
+    } else {
+        false
+    };
 
     println!("\njito tip present: {:?}", jito_tip);
 
     println!("\ngrep_jito_tips: {:?}", grep_jito_tips);
-    
-   // Get the amount of a present Jito Tip Sent
+
+    // Get the amount of a present Jito Tip Sent
     let tx_jito_tip = tx_response
         .result
         .clone()
@@ -99,7 +87,7 @@ pub fn analyze_tx(tx_response: TransactionResponse) -> TxAnalyticsTable {
 
     println!("\ntx_jito_tip: {:?}", tx_jito_tip);
 
-    TxAnalyticsTable {
+    tables::TxAnalyticsTable {
         compute_units,
         fee,
         compute_budget_call: false,
@@ -107,15 +95,3 @@ pub fn analyze_tx(tx_response: TransactionResponse) -> TxAnalyticsTable {
     }
 }
 
-pub fn analyze_pfe(pfe_response: priorityFeeEstimateResult) -> PfeAnalyticsTable {
-    let pfe = pfe_response.priority_fee_levels.unwrap();
-
-    PfeAnalyticsTable {
-        min: pfe.min.unwrap(),
-        low: pfe.low.unwrap(),
-        medium: pfe.medium.unwrap(),
-        high: pfe.high.unwrap(),
-        very_high: pfe.very_high.unwrap(),
-        unsafe_max: pfe.unsafe_max.unwrap(),
-    }
-}

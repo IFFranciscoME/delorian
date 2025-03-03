@@ -2,12 +2,13 @@
 
 #![allow(warnings)]
 
+use crate::types::TransactionType;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use crate::types::TransactionType;
 
-// -------------------------------------------------------- Solana Recent PrioritizationFees -- //
-// -------------------------------------------------------- -------------------------------- -- //
+// ------------------------------------------------------- Solana Recent Prioritization Fees -- //
+// ------------------------------------------------------- --------------------------------- -- //
+
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SolanaResponse {
@@ -19,8 +20,15 @@ pub struct SolanaResponse {
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SolanaResult {
-    pub slot: i64,
-    pub prioritization_fee: u64
+    pub slot: Option<i64>,
+    pub prioritization_fee: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct priorityFeeRecentResponse {
+    pub slots: Option<Vec<i64>>,
+    pub fees: Option<Vec<u64>>,
 }
 
 // -------------------------------------------------------------------- Enriched Transaction -- //

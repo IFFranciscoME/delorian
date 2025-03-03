@@ -8,9 +8,11 @@ pub mod clients;
 /// Data structures
 pub mod data;
 
+/// Decode data packages
+pub mod decoder;
+
 /// File I/O functionality
 pub mod files;
 
 /// Transaction Types
 pub mod types;
-
