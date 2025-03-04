@@ -20,9 +20,9 @@ delorian-results = { workspace = true }
 tokio = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-borsh = { workspace = true }
 hex = { workspace = true }
-bs58 = "0.5.1"
+bs58 = { workspace = true }
+
 # Solana
 reqwest = { workspace = true }
 solana-transaction-status = { workspace = true }

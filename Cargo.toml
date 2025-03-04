@@ -47,7 +47,7 @@ regex = { version = "1.5" }
 hex = { version = "0.4" }
 
 # Data
-borsh = {version = "0.9.3" }
+bs58 = { version = "0.5.1" }
 
 # Delorian complements
 delorian = { path = "./delorian", version = "0.0.1" }

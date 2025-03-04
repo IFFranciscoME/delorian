@@ -31,6 +31,11 @@ pub struct priorityFeeRecentResponse {
     pub fees: Option<Vec<u64>>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct priorityFeeRecentComodin {
+    pub content: String,
+}
+
 // -------------------------------------------------------------------- Enriched Transaction -- //
 // -------------------------------------------------------------------- -------------------- -- //
 

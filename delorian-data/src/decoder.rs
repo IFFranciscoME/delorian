@@ -1,31 +1,39 @@
-use serde::{Serialize, Deserialize};
-use serde_json::json;
-use hex::FromHexError;
-use borsh::{BorshDeserialize, BorshSerialize};
-use bs58::{decode, encode};
 use hex::encode as hex_encode;
+use hex::FromHexError;
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 
-#[derive(Serialize, Deserialize, Debug, BorshDeserialize, BorshSerialize)]
-pub struct DataInfo {
-    #[serde(rename = "type")]
-    pub data_type: String,
-    pub data: String,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DecodedInstruction {
+    pub discriminator: u32,
+    pub lamports: u64,
 }
 
-#[derive(Serialize, Deserialize, Debug, BorshDeserialize, BorshSerialize)]
-pub struct InstructionType {
-    pub discriminator: DataInfo,
-    pub lamports: DataInfo,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TransferInfo {
+    pub source: String,
+    pub destination: String,
+    pub lamports: u64,
 }
 
-pub fn decode_instruction_data(encoded_data: &str) -> Result<String, Box<dyn std::error::Error>> {
+pub fn decode_instruction_data(
+    encoded_data: &str,
+) -> Result<TransferInfo, Box<dyn std::error::Error>> {
     // Decode Base58 string to bytes
     let decoded_data = bs58::decode(encoded_data).into_vec()?;
 
-    // Attempt Borsh deserialization
-    let instruction: InstructionType = BorshDeserialize::try_from_slice(&decoded_data[..])?;
+    let source = "";
+    let destination = "";
 
-    // Serialize to JSON
-    let json_output = serde_json::to_string(&instruction)?;
-    Ok(json_output)
+    // Parse the first 4 bytes as the discriminator (u32)
+    let discriminator = u32::from_le_bytes(decoded_data[0..4].try_into()?);
+
+    // Parse the next 8 bytes as lamports (u64)
+    let lamports = u64::from_le_bytes(decoded_data[4..12].try_into()?);
+
+    Ok(TransferInfo {
+        source: source.to_string(),
+        destination: destination.to_string(),
+        lamports,
+    })
 }

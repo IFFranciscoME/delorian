@@ -11,9 +11,8 @@ pub mod processing;
 /// Metrics from Blockchain Data
 pub mod metrics;
 
-/// Response Tables 
+/// Response Tables
 pub mod tables;
-
 
 pub fn analyze_tx(tx_response: TransactionResponse) -> tables::TxAnalyticsTable {
     let compute_units = tx_response
@@ -94,4 +93,3 @@ pub fn analyze_tx(tx_response: TransactionResponse) -> tables::TxAnalyticsTable 
         net_profit: 1.0,
     }
 }
-

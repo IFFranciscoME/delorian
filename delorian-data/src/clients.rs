@@ -1,8 +1,6 @@
 use crate::data::{
-    SolanaResponse,
-    priorityFeeEstimateResponse,
-    priorityFeeRecentResponse,
-    TransactionResponse};
+    priorityFeeEstimateResponse, priorityFeeRecentResponse, SolanaResponse, TransactionResponse,
+};
 use anyhow::{Context, Result};
 use reqwest::Client;
 use serde::Deserialize;
@@ -44,7 +42,7 @@ impl SolanaRpcBuilder {
 impl SolanaRpc {
     pub async fn get_priority_fee_recent(
         &self,
-        v_accounts: Vec<String>
+        v_accounts: Vec<String>,
     ) -> Result<priorityFeeRecentResponse> {
         let solana_client = Client::new();
         let url = format!("{}", self.url);
@@ -64,15 +62,19 @@ impl SolanaRpc {
             .await
             .context("Failed to send RPC request to Solana")?;
 
+        // When solana_response fails, parse this as String with all the contents
+
         let solana_rpf_response: SolanaResponse = solana_response
             .json()
             .await
             .context("Failed to parse Solana response JSON data")?;
-        
-        let fees = solana_rpf_response
-            .result
-            .as_ref()
-            .map(|results| results.iter().filter_map(|r| r.prioritization_fee).collect());
+
+        let fees = solana_rpf_response.result.as_ref().map(|results| {
+            results
+                .iter()
+                .filter_map(|r| r.prioritization_fee)
+                .collect()
+        });
 
         let slots = solana_rpf_response
             .result
@@ -80,7 +82,6 @@ impl SolanaRpc {
             .map(|results| results.iter().filter_map(|r| r.slot).collect());
 
         Ok(priorityFeeRecentResponse { slots, fees })
-
     }
 }
 

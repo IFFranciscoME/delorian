@@ -1,4 +1,3 @@
-
 #[derive(Debug, Clone)]
 pub struct JitoMetricsTable {
     pub tip_found: bool,
@@ -43,4 +42,3 @@ pub struct TxAnalyticsTable {
     pub compute_budget_call: bool,
     pub net_profit: f64,
 }
-
