@@ -50,16 +50,6 @@ async fn main() -> Result<()> {
     for i_signature in v_jito_tx.unwrap() {
         println!("\n-- tx_signature: {:?}\n", &i_signature);
 
-        /*
-        // let bytes = general_purpose::STANDARD.decode("3Bxs458R6CR7BaKR").unwrap();
-        let decoded_data = bs58::decode("3Bxs458R6CR7BaKR").into_vec()?;
-        // Parse the first 4 bytes as the discriminator (u32)
-        let discriminator = u32::from_le_bytes(decoded_data[0..4].try_into()?);
-        // Parse the next 8 bytes as lamports (u64)
-        let lamports = u64::from_le_bytes(decoded_data[4..12].try_into()?);
-        println!("discriminator: {:?}, lamports: {:?}", discriminator, lamports);
-        */
-
         // -------------------------------------------------------------- Transaction's Data -- //
         // -------------------------------------------------------------- ------------------ -- //
 

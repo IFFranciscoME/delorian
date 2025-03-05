@@ -81,7 +81,7 @@ pub fn co_metrics(tx_response: TransactionResponse) -> tables::CostsMetricsTable
     // Parse indexes from ComputeBudget calls (SetComputeUnitPrice, SetComputeUnitLimit)
 
     // Get compute unit limit
-    let _tx_instructions_data = tx_response
+    let tx_instructions_data = tx_response
         .result
         .clone()
         .unwrap()
@@ -91,13 +91,31 @@ pub fn co_metrics(tx_response: TransactionResponse) -> tables::CostsMetricsTable
         .instructions
         .unwrap();
 
-    //let hex_data = grep_cu_call[1];
-    //let json_result = decoder::decode_base_to_json(hex_data.1);
-    //println!("\n-- grep_cu_call: {:?}", grep_cu_call);
-    //let json_result = decoder::decode_hex_to_json(hex_data);
+    // println!("grep_cu_call: {:?}", grep_cu_call[0].1[0] as u64);
+    let acc_index = grep_cu_call[0].1[0].clone() as u64;
 
-    let cu_limit = 0;
-    let cu_price = 0;
+    // println!("\n-- tx_instructions_data: {:?}", tx_instructions_data);
+
+    let instructions_encoded_data: Vec<String> = tx_instructions_data
+        .clone()
+        .into_iter()
+        .filter_map(|i_instruction| {
+            if i_instruction.program_id_index.unwrap() == acc_index {
+                Some(i_instruction.data.unwrap())
+            } else {
+                None
+            }
+        })
+        .collect();
+    // println!("instructions_encoded_data : {:?}", instructions_encoded_data);
+
+    let v_co: (Option<u32>, Option<u64>) = if instructions_encoded_data.len() == 1 {
+        decoder::decode_icd(instructions_encoded_data).unwrap()
+    } else if instructions_encoded_data.len() == 2 {
+        decoder::decode_icd(instructions_encoded_data).unwrap()
+    } else {
+        decoder::decode_icd(instructions_encoded_data).unwrap_or((Some(0), Some(0)))
+    };
 
     // Get compute unit consumed
     let cu_consumed = tx_response
@@ -111,8 +129,8 @@ pub fn co_metrics(tx_response: TransactionResponse) -> tables::CostsMetricsTable
     tables::CostsMetricsTable {
         total_fee: fee,
         compute_budget_call: cu_data.0,
-        compute_unit_limit: cu_limit,
-        compute_unit_price: cu_price,
+        compute_unit_limit: v_co.0.unwrap_or(0),
+        compute_unit_price: v_co.1.unwrap_or(333),
         compute_unit_consumed: cu_consumed,
     }
 }

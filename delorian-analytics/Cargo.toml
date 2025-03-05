@@ -22,4 +22,4 @@ delorian-results = { workspace = true }
 regex = { workspace = true }
 # Error Handling
 thiserror = { workspace = true }
-
+serde_json = { workspace = true }

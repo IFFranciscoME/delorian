@@ -22,6 +22,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 hex = { workspace = true }
 bs58 = { workspace = true }
+borsh = { workspace = true }
 
 # Solana
 reqwest = { workspace = true }

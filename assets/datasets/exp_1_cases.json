@@ -11,7 +11,8 @@
       "4E3MThKhAE4VUxnfFAxuzuRDfCM6J1HQ4M7eVjRMX8h5asm5JPLmdxJwJdkR1fi6Ve3LcxRDhNn2aszYRUxpTfei",
       "3jtr8GJfN4LKc74Xu81VXzK5qVigFnA2xn8h7vuZTvQochhDN992PnZg34DpHLgw2xmEJwqfPV7FW8onTyjKdA4G",
       "4rznxhkr6DbMCkkfUAQ6iAF2VvmUsphmBa8dWtKaY3p5Cy9iKGjoRF9Ufwdfe1ZUz6ATLvLPrRa6Skuz1KyWehwG",
-      "4QvuhhF6aYATrnbjrJhip98nJYySUFh8m1WjZNXCko2FL8gDRM26ZmhZL7eJa4FbWDGZbcfwn1wBHNjhvXopD45d"
+      "4QvuhhF6aYATrnbjrJhip98nJYySUFh8m1WjZNXCko2FL8gDRM26ZmhZL7eJa4FbWDGZbcfwn1wBHNjhvXopD45d",
+      "xCbEAdXoGRBtFPLHuBj6XYCkxtmoXb5iU89vQqyU16GqRp48WSNwDMnfTsMqo3yRdMGyJx7D6ZJJDBKQjTRyy41"
     ],
     "block" : [
       321957340,
@@ -24,7 +25,8 @@
       321431626,
       321767870,
       320026897,
-      315374142
+      315374142,
+      322893416
     ],
     "signer": [
       "C4nYJX8RS9PwNZt3UywgbWSTMePAXTWSJELpQU1Y9k8T",
@@ -37,7 +39,8 @@
       "55NQkFDwwW8noThkL9Rd5ngbgUU36fYZeos1k5ZwjGdn",
       "CEEXTqHaqbVriXoW4uvdaPShkMaHg9AWnFXLS1nS887C",
       "54EiavhVatcFbcRHKm2swd6eB8reyib3kTkDGScoGjGK",
-      "55NQkFDwwW8noThkL9Rd5ngbgUU36fYZeos1k5ZwjGdn"
+      "55NQkFDwwW8noThkL9Rd5ngbgUU36fYZeos1k5ZwjGdn",
+      "E4VSFquazTV3PrSSKS7TMxuQxRCNBwk5ATVTSNhEUpgk"
     ]
   },
   "tx_arbs_suspected": {
