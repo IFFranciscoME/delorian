@@ -55,7 +55,15 @@ async fn main() -> Result<()> {
 
         // Each Arb positive transaction from the Jito Arb explorer
         let tx_response = h_client.get_tx(&i_signature).await?;
+
+        // -------------------------------------------------------- Jito Acitivity Detection -- //
+        // -------------------------------------------------------------- ------------------ -- //
+
         let tx_jito_metrics = metrics::jito_metrics(tx_response.clone());
+        
+        // ------------------------------------------- Cost Optimization Acitivity Detection -- //
+        // -------------------------------------------------------------- ------------------ -- //
+        
         let tx_co_metrics = metrics::co_metrics(tx_response.clone());
 
         // ---------------------------------------------------------- Priority Fee Estimates -- //

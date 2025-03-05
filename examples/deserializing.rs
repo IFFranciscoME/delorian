@@ -25,7 +25,7 @@ fn main() {
     let encoded_data = "L6DKVH";
 
     match decode_and_deserialize(encoded_data) {
-        Ok(data) => println!("Decoded and Deserialized Data: {:?}", data),
+        Ok(data) => println!("\n----\nDecoded and Deserialized Data: {:?}\n----\n", data),
         Err(e) => println!("Error: {}", e),
     }
 }

@@ -1,40 +1,31 @@
 # delorian
 
-## Main tasks
+The overall elements of the project are the following: 
 
-Characterize arbitrage transactions in 1 year worth of data:
+## Tooling
 
-- create an initial list of tx using the Arbitrage Explorer from Jito.
-- use Helium JSON-RPC API.
-- use helius getTransaction endpoint.
-- parse results and extract data (Inner instructions, Fees, etc.)
-- get priority fees used (use getPriorityFeesEstimate endpoint).
-- get compute units (additional stat).
-- get usage of compute_budget program (additional stat).
+- Repo is a Package with Modular crates, so it can be expanded simultaneously and as needed by two or more devs.
+- Docs, Tests, Benches for better dev practices and maintainability.
+- Error definition and handling.
 
-Considerations and Notes:
+## Data: 
 
-- Identify Data types of fields all the time
-- Develop this functionality following a "Tool" interface.
-- Possibly could become an add-on to the Analytics Engine.
+- Curated dataset, from Jito Arb Explorer, ancillary addresses and cases for experiment design.
+- Helius RPC client for PriorityFee estimated values.
+- Solana RPC client for PriorityFee historical values.
+- Wide reach of types definition (close to exhaustive).
+- Decoding-Deserialization for the encoded & serialized data on the instructions.
 
-## Extensions
+## Process:
 
-- Get, pre-process and store data about priority fees.
-- Perform a EDA for priority fees time series.
-- Predictive Modeling process for priority fees, backtest to 1 year, and in real time.
+- Async client connection for both sources.
 
-# Definitions
+## Analytics: 
 
-## When a transaction is a successful arbitrage ?
-
-Strong conditions
-- The transaction is completed
-- Net rofit is > 0
-- Two or more venues are involved.
-
-Soft conditions
-- Same single signer
-- Cost optimization actions (e.g. call to ComputeBudget)
-- PriorityFees above a "sensible threshold" (i.e. above the observed average)
+- Data parsing for metrics calculations.
+- Silver tables to build timeseries and/or storage in FileSystems or DBs
+- Jito Tips Activity Detection
+- Costs Optimization Activity Detection
+- Priority Fees (for a particular account) Estimate Stats
+- Priority Fees (for a particular account) Historical Values
 
