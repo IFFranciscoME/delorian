@@ -22,7 +22,8 @@ delorian-results = { path = "../delorian-results", version = "0.0.1" }
 
 # Error Handling
 thiserror = { workspace = true }
+tokio = { version = "1.0", features = ["full"] }
 
 [[test]]
-name = "test_connectors"
-path = "connectors.rs"
+name = "test_solana_client"
+path = "solana_client.rs"

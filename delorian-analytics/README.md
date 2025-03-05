@@ -24,7 +24,6 @@ Data:
 - dataset_a: 10 Arb transactions (Jito Explorer)
 - dataset_b: 10 Non-arb transactions (pseudo-randomly picked)
 
-
 # Classification of Arbitrage
 
 1. By Timeframe
