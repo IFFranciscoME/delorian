@@ -1,6 +1,13 @@
 use crate::data::{
-    priorityFeeEstimateResponse, priorityFeeRecentResponse, SolanaResponse, TransactionResponse,
+    priorityFeeEstimateResponse,
+    priorityFeeRecentResponse,
+    SolanaResponse,
+    SolanaResponse2,
+    BlockResult,
+    TransactionResponse,
+    TransactionMeta2,
 };
+
 use anyhow::{Context, Result};
 use reqwest::Client;
 use serde::Deserialize;
@@ -40,6 +47,46 @@ impl SolanaRpcBuilder {
 }
 
 impl SolanaRpc {
+
+    pub async fn get_block(&self, slot: u64) -> Result<SolanaResponse2> {
+        
+        let solana_client = Client::new();
+        let url = format!("{}", self.url);
+
+        let solana_request = json!({
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "getBlock",
+            "params": [
+                slot,
+                { 
+                    "encoding": "json",
+                    "maxSupportedTransactionVersion": 0,
+                    "transactionDetails": "full",
+                    "rewards": false
+                }
+            ]
+        });
+
+        let solana_post = solana_client
+            .post(url)
+            .header("Content-Type", "application/json")
+            .json(&solana_request)
+            .send()
+            .await
+            .context("Failed to send getBlock RPC request")?;
+        
+
+        let solana_response: SolanaResponse2 = solana_post
+            .json()
+            .await
+            .context("Failed to parse getBlock response data")?;
+
+        // println!("solana_response: {:?}", &solana_transactions);
+        
+        Ok(solana_response)
+    }
+
     pub async fn get_priority_fee_recent(
         &self,
         v_accounts: Vec<String>,
@@ -160,7 +207,7 @@ impl HeliusRpc {
 
     pub async fn get_priority_fee_estimate(
         &self,
-        account_keys: &str,
+        account_keys: Vec<String>,
     ) -> Result<priorityFeeEstimateResponse> {
         let helius_endpoint = "getPriorityFeeEstimate".to_string();
         let helius_client = Client::new();
@@ -172,7 +219,7 @@ impl HeliusRpc {
             "method": &helius_endpoint,
             "params": [
                 {
-                    "accountKeys": [account_keys],
+                    "accountKeys": account_keys,
                     "options": { "includeAllPriorityFeeLevels": true },
                 },
             ],

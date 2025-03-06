@@ -6,6 +6,59 @@ use crate::types::TransactionType;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+// ------------------------------------------------------- --------------------------------- -- //
+// ------------------------------------------------------- --------------------------------- -- //
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SolanaResponse2 {
+    pub id: i64,
+    pub jsonrpc: String,
+    pub result: Option<BlockResult>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BlockResult {
+    pub block_height: Option<i64>,
+    pub block_time: Option<i64>,
+    pub blockhash: Option<String>,
+    pub parent_slot: Option<u64>,
+    pub previous_blockhash: Option<String>,
+    pub transactions: Option<Vec<Transactions>>
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Transactions {
+    pub meta: Option<TransactionMeta2>,
+    pub transaction: Option<Transaction>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionMeta2 {
+    pub err: Option<serde_json::Value>,
+    pub fee: Option<u64>,
+    pub pre_balances: Option<Vec<u64>>,
+    pub post_balances: Option<Vec<u64>>,
+    pub inner_instructions: Option<Vec<InnerInstruction>>,
+    pub log_messages: Option<Vec<String>>,
+    pub pre_token_balances: Option<Vec<TokenBalance>>,
+    pub post_token_balances: Option<Vec<TokenBalance>>,
+    pub rewards: Option<Vec<Reward>>,
+    pub status: Option<TransactionStatus>,
+    pub compute_units_consumed: Option<u64>,
+    pub loaded_addresses: Option<LoadedAddresses>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Transaction {
+    pub message: Option<Message>,
+    pub signatures: Vec<String>,
+}
+
 // ------------------------------------------------------- Solana Recent Prioritization Fees -- //
 // ------------------------------------------------------- --------------------------------- -- //
 
@@ -16,6 +69,7 @@ pub struct SolanaResponse {
     pub result: Option<Vec<SolanaResult>>,
     pub id: i64,
 }
+
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -298,13 +352,6 @@ pub struct TransactionMeta {
     pub loaded_addresses: Option<LoadedAddresses>,
 }
 
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Transaction {
-    pub message: Option<Message>,
-    pub signatures: Vec<String>,
-}
-
 // --------------------------------------------------------------------------------- Message -- //
 // --------------------------------------------------------------------------------- ------- -- //
 
@@ -315,7 +362,7 @@ pub struct Message {
     pub header: MessageHeader,
     pub instructions: Option<Vec<Instruction>>,
     pub recent_blockhash: Option<String>,
-    pub address_table_lookups: Vec<AddressTableLookup>,
+    pub address_table_lookups: Option<Vec<AddressTableLookup>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

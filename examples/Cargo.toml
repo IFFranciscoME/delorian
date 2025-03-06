@@ -33,6 +33,14 @@ bs58 = { workspace = true }
 borsh = { version = "0.9" }
 
 [[example]]
+name = "experiment_pf"
+path = "experiment_pf.rs"
+
+[[example]]
+name = "historical_transactions"
+path = "historical_transactions.rs"
+
+[[example]]
 name = "solana_transactions"
 path = "solana_transactions.rs"
 
